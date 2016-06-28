@@ -54,6 +54,7 @@
   info[@"frame"] = NSStringFromCGRect(snapshot.wdFrame);
   info[@"isEnabled"] = [@([snapshot isWDEnabled]) stringValue];
   info[@"isVisible"] = [@([snapshot isWDVisible]) stringValue];
+  info[@"isAccessible"] = [@([snapshot isWDAccessible]) stringValue];
 
   NSArray *childElements = snapshot.children;
   if ([childElements count]) {

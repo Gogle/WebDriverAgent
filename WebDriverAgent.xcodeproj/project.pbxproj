@@ -1933,7 +1933,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EEE5CABF1C80361500CBBDD9 /* ProjectSettings.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: SNG Tencent (DVLQK89SF3)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1947,8 +1947,9 @@
 					"$(inherited)",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.xctweb-driver-agent";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tencent.xctweb-driver-agent";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "af42a7f7-6b3e-4e59-aec8-248c5dc89cec";
 				USES_XCTRUNNER = YES;
 			};
 			name = Debug;
@@ -1970,8 +1971,9 @@
 					"$(inherited)",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.xctweb-driver-agent";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.tencent.xctweb-driver-agent";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "af42a7f7-6b3e-4e59-aec8-248c5dc89cec";
 				USES_XCTRUNNER = YES;
 			};
 			name = Release;

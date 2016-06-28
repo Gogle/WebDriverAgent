@@ -51,6 +51,7 @@ static id<FBResponsePayload> FBNoSuchElementErrorResponseForRequest(FBRouteReque
     [[FBRoute GET:@"/uiaElement/:uuid/getVisibleCells"] respondWithTarget:self action:@selector(handleFindVisibleCells:)],
     [[FBRoute POST:@"/element/:uuid/element"] respondWithTarget:self action:@selector(handleFindSubElement:)],
     [[FBRoute POST:@"/element/:uuid/elements"] respondWithTarget:self action:@selector(handleFindSubElements:)],
+    [[FBRoute POST:@"/superTap"] respondWithTarget:self action:@selector(handleSuperTapElement:)],
   ];
 }
 
@@ -107,6 +108,24 @@ static id<FBResponsePayload> FBNoSuchElementErrorResponseForRequest(FBRouteReque
   return FBResponseWithCachedElements(foundElements, request.session.elementCache);
 }
 
++ (id<FBResponsePayload>)handleSuperTapElement:(FBRouteRequest *)request
+{
+  NSString *typeName = request.parameters[@"className"];
+  NSString *index = request.parameters[@"index"];
+  NSLog(@"Calling Super Tap with type %@ at index %@", typeName, index);
+  XCUIElementType type = [FBElementTypeTransformer elementTypeWithTypeName:typeName];
+  return [self.class tapElementWithType:type atIndex:[index integerValue] under:request.session.application];
+}
+
++ (id<FBResponsePayload>)tapElementWithType:(XCUIElementType)type atIndex:(NSUInteger)index under:(XCUIElement *)element
+{
+  NSArray<XCUIElement *> *elements = [[element descendantsMatchingType:type] allElementsBoundByIndex];
+  //    NSLog(@"%@", elements);
+  if (index > [elements count])
+    return FBResponseWithOK();
+  [[elements objectAtIndex:index] tap];
+  return FBResponseWithOK();
+}
 
 #pragma mark - Helpers
 
