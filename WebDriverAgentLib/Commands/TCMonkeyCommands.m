@@ -44,7 +44,7 @@
     return FBResponseWithOK();
   }
   NSError *error = nil;
-  if (![element fb_tapWithError:&error]) {
+  if (![[elements objectAtIndex:index] fb_tapWithError:&error]) {
     return FBResponseWithError(error);
   }
   return FBResponseWithOK();
