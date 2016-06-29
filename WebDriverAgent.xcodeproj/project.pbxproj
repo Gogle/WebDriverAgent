@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		935BD1A01D2375B500B5C1ED /* TCMonkeyCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 935BD19E1D2375B500B5C1ED /* TCMonkeyCommands.h */; };
+		935BD1A11D2375B500B5C1ED /* TCMonkeyCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 935BD19F1D2375B500B5C1ED /* TCMonkeyCommands.m */; };
 		AD35D01A1CF1418E00870A75 /* RoutingHTTPServer.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD2B1CF1238500806E5D /* RoutingHTTPServer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD35D01C1CF141A600870A75 /* KissXML.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD271CF120B000806E5D /* KissXML.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD35D0631CF1C2C200870A75 /* KissXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD271CF120B000806E5D /* KissXML.framework */; };
@@ -318,6 +320,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		935BD19E1D2375B500B5C1ED /* TCMonkeyCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCMonkeyCommands.h; sourceTree = "<group>"; };
+		935BD19F1D2375B500B5C1ED /* TCMonkeyCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCMonkeyCommands.m; sourceTree = "<group>"; };
 		AD35D0291CF1B39E00870A75 /* generate_modules.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = generate_modules.sh; sourceTree = "<group>"; };
 		AD35D0651CF1C2CE00870A75 /* Peertalk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Peertalk.framework; path = Carthage/Build/iOS/Peertalk.framework; sourceTree = "<group>"; };
 		AD35D0691CF1C30700870A75 /* Peertalk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Peertalk.framework; path = Carthage/Build/Mac/Peertalk.framework; sourceTree = "<group>"; };
@@ -784,6 +788,8 @@
 				EE9AB7631CAEDF0C008C271F /* FBTouchIDCommands.m */,
 				EE9AB7641CAEDF0C008C271F /* FBUnknownCommands.h */,
 				EE9AB7651CAEDF0C008C271F /* FBUnknownCommands.m */,
+				935BD19E1D2375B500B5C1ED /* TCMonkeyCommands.h */,
+				935BD19F1D2375B500B5C1ED /* TCMonkeyCommands.m */,
 			);
 			name = Commands;
 			path = WebDriverAgentLib/Commands;
@@ -1177,6 +1183,7 @@
 				EE158AE11CBD456F00A3E3F0 /* FBRouteRequest.h in Headers */,
 				EE158AE41CBD456F00A3E3F0 /* FBSession.h in Headers */,
 				EE158ACA1CBD456F00A3E3F0 /* FBTouchIDCommands.h in Headers */,
+				935BD1A01D2375B500B5C1ED /* TCMonkeyCommands.h in Headers */,
 				EE158ABA1CBD456F00A3E3F0 /* FBCustomCommands.h in Headers */,
 				EE158AC41CBD456F00A3E3F0 /* FBOrientationCommands.h in Headers */,
 				EE158AE01CBD456F00A3E3F0 /* FBRouteRequest-Private.h in Headers */,
@@ -1542,6 +1549,7 @@
 				EE158ABF1CBD456F00A3E3F0 /* FBElementCommands.m in Sources */,
 				EE158AD51CBD456F00A3E3F0 /* FBExceptionHandler.m in Sources */,
 				EE158AE91CBD456F00A3E3F0 /* FBElementTypeTransformer.m in Sources */,
+				935BD1A11D2375B500B5C1ED /* TCMonkeyCommands.m in Sources */,
 				EE158AF61CBD456F00A3E3F0 /* FBApplication.m in Sources */,
 				EE158AB51CBD456F00A3E3F0 /* XCUIElement+FBTap.m in Sources */,
 			);
