@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9301DFDC1D241AF000AF5E38 /* AgentForHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 9301DFDA1D241AF000AF5E38 /* AgentForHost.h */; };
+		9301DFDD1D241AF000AF5E38 /* AgentForHost.m in Sources */ = {isa = PBXBuildFile; fileRef = 9301DFDB1D241AF000AF5E38 /* AgentForHost.m */; };
 		935BD1A01D2375B500B5C1ED /* TCMonkeyCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 935BD19E1D2375B500B5C1ED /* TCMonkeyCommands.h */; };
 		935BD1A11D2375B500B5C1ED /* TCMonkeyCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 935BD19F1D2375B500B5C1ED /* TCMonkeyCommands.m */; };
 		AD35D01A1CF1418E00870A75 /* RoutingHTTPServer.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD2B1CF1238500806E5D /* RoutingHTTPServer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -320,6 +322,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9301DFDA1D241AF000AF5E38 /* AgentForHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AgentForHost.h; path = WebDriverAgentLib/AgentForHost.h; sourceTree = SOURCE_ROOT; };
+		9301DFDB1D241AF000AF5E38 /* AgentForHost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AgentForHost.m; path = WebDriverAgentLib/AgentForHost.m; sourceTree = SOURCE_ROOT; };
 		935BD19E1D2375B500B5C1ED /* TCMonkeyCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCMonkeyCommands.h; sourceTree = "<group>"; };
 		935BD19F1D2375B500B5C1ED /* TCMonkeyCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCMonkeyCommands.m; sourceTree = "<group>"; };
 		AD35D0291CF1B39E00870A75 /* generate_modules.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = generate_modules.sh; sourceTree = "<group>"; };
@@ -985,6 +989,8 @@
 				EE9AB7701CAEDF0C008C271F /* FBWebDriverAgent.h */,
 				EE9AB7711CAEDF0C008C271F /* FBWebDriverAgent.m */,
 				EE158B5D1CBD479000A3E3F0 /* Info.plist */,
+				9301DFDA1D241AF000AF5E38 /* AgentForHost.h */,
+				9301DFDB1D241AF000AF5E38 /* AgentForHost.m */,
 			);
 			name = WebDriverAgentLib;
 			path = XCTWebDriverAgentLib;
@@ -1119,6 +1125,7 @@
 				EE158B2C1CBD459C00A3E3F0 /* XCTestCase-AsynchronousTesting.h in Headers */,
 				EE158B121CBD459C00A3E3F0 /* XCApplicationMonitor_OSX.h in Headers */,
 				EE158B281CBD459C00A3E3F0 /* XCTest-ReportingAdditions.h in Headers */,
+				9301DFDC1D241AF000AF5E38 /* AgentForHost.h in Headers */,
 				EE158B421CBD459C00A3E3F0 /* XCTestSuite-XCTestProbeExtensions.h in Headers */,
 				EE158B1F1CBD459C00A3E3F0 /* XCKeyMappingPath.h in Headers */,
 				EE158B521CBD459C00A3E3F0 /* XCUIElementAsynchronousHandlerWrapper.h in Headers */,
@@ -1516,6 +1523,7 @@
 				EE158ADD1CBD456F00A3E3F0 /* FBResponsePayload.m in Sources */,
 				EE158AAB1CBD456F00A3E3F0 /* XCElementSnapshot+Helpers.m in Sources */,
 				EE158ADF1CBD456F00A3E3F0 /* FBRoute.m in Sources */,
+				9301DFDD1D241AF000AF5E38 /* AgentForHost.m in Sources */,
 				EEE9B4731CD02B88009D2030 /* FBRunLoopSpinner.m in Sources */,
 				EE158AE21CBD456F00A3E3F0 /* FBRouteRequest.m in Sources */,
 				EE158AFC1CBD456F00A3E3F0 /* FBWebDriverAgent.m in Sources */,

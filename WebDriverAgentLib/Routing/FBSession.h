@@ -9,6 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class AgentForHost;
 @class FBApplication;
 @class FBElementCache;
 
@@ -28,6 +29,9 @@ extern NSString *const FBApplicationCrashedException;
 
 /*! Element cache related to that session */
 @property (nonatomic, strong, readonly) FBElementCache *elementCache;
+
+/*! Agent for communicating with tested app related to that session */
+@property (nonatomic, strong, readonly) AgentForHost *appAgent;
 
 + (instancetype)activeSession;
 

@@ -13,6 +13,7 @@
 #import "FBSession.h"
 #import "FBApplication.h"
 #import "XCUIElement+FBTap.h"
+#import "AgentForHost.h"
 
 @implementation TCMonkeyCommands
 
@@ -23,6 +24,8 @@
   return
   @[
     [[FBRoute POST:@"/superTap"] respondWithTarget:self action:@selector(handleSuperTapElement:)],
+    [[FBRoute POST:@"/connectToApp"] respondWithTarget:self action:@selector(handleConnectToAppAtPort:)],
+    [[FBRoute GET:@"/getViewController"] respondWithTarget:self action:@selector(handleGetViewController:)],
     ];
 }
 
@@ -33,6 +36,19 @@
   NSLog(@"Calling Super Tap with type %@ at index %@", typeName, index);
   XCUIElementType type = [FBElementTypeTransformer elementTypeWithTypeName:typeName];
   return [self.class tapElementWithType:type atIndex:[index integerValue] under:request.session.application];
+}
+
++ (id<FBResponsePayload>)handleConnectToAppAtPort:(FBRouteRequest *)request
+{
+  NSString *port = request.parameters[@"port"];
+  NSLog(@"Calling ConnectToApp at port %@", port);
+  [request.session.appAgent connectToLocalIPv4AtPort:(in_port_t)[port intValue]];
+  return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)handleGetViewController:(FBRouteRequest *)request
+{
+  return FBResponseWithObject([request.session.appAgent currentViewController]);
 }
 
 + (id<FBResponsePayload>)tapElementWithType:(XCUIElementType)type atIndex:(NSUInteger)index under:(XCUIElement *)element
