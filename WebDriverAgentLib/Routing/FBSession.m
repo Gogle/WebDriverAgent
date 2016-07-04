@@ -84,4 +84,9 @@ static FBSession *_activeSession;
   return application;
 }
 
+- (BOOL)testedApplicationRunning
+{
+  return self.testedApplication.running;
+}
+
 @end

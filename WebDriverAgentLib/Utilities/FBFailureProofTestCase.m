@@ -12,6 +12,7 @@
 #import "FBExceptionHandler.h"
 #import "FBLogger.h"
 #import "FBXCTestCaseImplementationFailureHoldingProxy.h"
+#import "FBSession.h"
 
 @interface FBFailureProofTestCase ()
 @property (nonatomic, assign) BOOL didRegisterAXTestFailure;
@@ -34,7 +35,7 @@
                                 atLine:(NSUInteger)lineNumber
                               expected:(BOOL)expected
 {
-  [FBLogger logFmt:@"Enqueue Failure: %@ %@ %lu %d", description, filePath, (unsigned long)lineNumber, expected];
+  [FBLogger logFmt:@"Enqueue Failure:\nDescription: %@\nFilepath: %@\nlineNumber: %lu\nExpected: %d", description, filePath, (unsigned long)lineNumber, expected];
   const BOOL isPossibleDeadlock = ([description rangeOfString:@"Failed to get refreshed snapshot"].location != NSNotFound);
   if (!isPossibleDeadlock) {
     self.didRegisterAXTestFailure = YES;
@@ -45,6 +46,10 @@
                              reason:@"Can't communicate with deadlocked application"
                            userInfo:nil]
      raise];
+  }
+  const BOOL isPossibleCrash = ([description rangeOfString:@"Application is not running"].location != NSNotFound);
+  if (isPossibleCrash) {
+    [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
   }
 }
 

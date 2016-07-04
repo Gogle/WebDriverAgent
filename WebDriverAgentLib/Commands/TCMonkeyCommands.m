@@ -14,6 +14,8 @@
 #import "FBApplication.h"
 #import "XCUIElement+FBTap.h"
 #import "AgentForHost.h"
+#import "FBKeyboard.h"
+#import "FBResponsePayload.h"
 
 @implementation TCMonkeyCommands
 
@@ -23,19 +25,28 @@
 {
   return
   @[
-    [[FBRoute POST:@"/superTap"] respondWithTarget:self action:@selector(handleSuperTapElement:)],
+    [[FBRoute POST:@"/superProcess"] respondWithTarget:self action:@selector(handleSuperProcessElement:)],
     [[FBRoute POST:@"/connectToApp"] respondWithTarget:self action:@selector(handleConnectToAppAtPort:)],
     [[FBRoute GET:@"/getViewController"] respondWithTarget:self action:@selector(handleGetViewController:)],
     ];
 }
 
-+ (id<FBResponsePayload>)handleSuperTapElement:(FBRouteRequest *)request
++ (id<FBResponsePayload>)handleSuperProcessElement:(FBRouteRequest *)request
 {
   NSString *typeName = request.parameters[@"className"];
   NSString *index = request.parameters[@"index"];
-  NSLog(@"Calling Super Tap with type %@ at index %@", typeName, index);
+  NSString *value = request.parameters[@"value"];
+  NSLog(@"Calling SuperProcess with type %@ at index %@", typeName, index);
   XCUIElementType type = [FBElementTypeTransformer elementTypeWithTypeName:typeName];
-  return [self.class tapElementWithType:type atIndex:[index integerValue] under:request.session.application];
+  NSError *error = [self.class processElementWithType:type atIndex:[index integerValue] under:request.session.application usingValue:value];
+  if (error) {
+    if ([request.session testedApplicationRunning]) {
+      return FBResponseWithError(error);
+    } else {
+      [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
+    }
+  }
+  return FBResponseWithOK();
 }
 
 + (id<FBResponsePayload>)handleConnectToAppAtPort:(FBRouteRequest *)request
@@ -51,19 +62,36 @@
   return FBResponseWithObject([request.session.appAgent currentViewController]);
 }
 
-+ (id<FBResponsePayload>)tapElementWithType:(XCUIElementType)type atIndex:(NSUInteger)index under:(XCUIElement *)element
++ (NSError *)processElementWithType:(XCUIElementType)type atIndex:(NSUInteger)index under:(XCUIElement *)element usingValue:(NSString *)value
 {
+  NSError *error = nil;
   NSArray<XCUIElement *> *elements = [[element descendantsMatchingType:type] allElementsBoundByIndex];
   //    NSLog(@"%@", elements);
   if (index >= [elements count]) {
-    NSLog(@"Index of the element to tap is beyond count.");
-    return FBResponseWithOK();
+    NSLog(@"Index of the element to process is beyond count.");
+    return nil;
   }
-  NSError *error = nil;
-  if (![[elements objectAtIndex:index] fb_tapWithError:&error]) {
-    return FBResponseWithError(error);
+  XCUIElement *element_chosen = [elements objectAtIndex:index];
+  if (type == XCUIElementTypeSearchField || type == XCUIElementTypeTextField || type == XCUIElementTypeSecureTextField) {
+    if (!element_chosen.hasKeyboardFocus && ![element_chosen fb_tapWithError:&error]) {
+      return error;
+    }
+    if (!value) {
+      value = [NSString stringWithFormat:@"This is a sentencce for newmonkey testing.\n"];
+    } else {
+      if (![value hasSuffix:@"\n"]) {
+        value = [value stringByAppendingString:@"\n"];
+      }
+    }
+    if (![FBKeyboard typeText:value error:&error]) {
+      return error;
+    }
+    return nil;
   }
-  return FBResponseWithOK();
+  if (![element_chosen fb_tapWithError:&error]) {
+    return error;
+  }
+  return nil;
 }
 
 @end

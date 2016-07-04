@@ -52,6 +52,8 @@ extern NSString *const FBApplicationCrashedException;
  */
 + (instancetype)sessionWithApplication:(FBApplication *)application;
 
+- (BOOL)testedApplicationRunning;
+
 /**
  Kills application associated with that session and removes session
  */
