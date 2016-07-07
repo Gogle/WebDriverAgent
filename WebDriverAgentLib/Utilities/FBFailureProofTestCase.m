@@ -47,8 +47,10 @@
                            userInfo:nil]
      raise];
   }
-  const BOOL isPossibleCrash = ([description rangeOfString:@"Application is not running"].location != NSNotFound);
-  if (isPossibleCrash) {
+  const BOOL isPossibleCrashAtStartUp = ([description rangeOfString:@"Application is not running"].location != NSNotFound);
+  const BOOL isPossibleCrashDuringTest = ([description rangeOfString:@"Failed to copy attributes after 30 retries"].location != NSNotFound);
+  if (isPossibleCrashAtStartUp || isPossibleCrashDuringTest) {
+    NSLog(@"gogleyin detect app crash");
     [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
   }
 }

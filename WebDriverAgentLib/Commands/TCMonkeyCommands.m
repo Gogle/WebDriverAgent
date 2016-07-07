@@ -16,6 +16,7 @@
 #import "AgentForHost.h"
 #import "FBKeyboard.h"
 #import "FBResponsePayload.h"
+#import "XCUIApplication+FBHelpers.h"
 
 @implementation TCMonkeyCommands
 
@@ -25,10 +26,21 @@
 {
   return
   @[
+    [[FBRoute POST:@"/getTestedAppTree"] respondWithTarget:self action:@selector(handleGetTestedAppTree:)],
     [[FBRoute POST:@"/superProcess"] respondWithTarget:self action:@selector(handleSuperProcessElement:)],
     [[FBRoute POST:@"/connectToApp"] respondWithTarget:self action:@selector(handleConnectToAppAtPort:)],
     [[FBRoute GET:@"/getViewController"] respondWithTarget:self action:@selector(handleGetViewController:)],
     ];
+}
+
++ (id<FBResponsePayload>)handleGetTestedAppTree:(FBRouteRequest *)request
+{
+  FBApplication *application = request.session.application;
+  if (!application || !application.running) {
+    [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
+  }
+  const BOOL accessibleTreeType = [request.arguments[@"accessible"] boolValue];
+  return FBResponseWithStatus(FBCommandStatusNoError, @{ @"tree": (accessibleTreeType ? application.fb_accessibilityTree : application.fb_tree) });
 }
 
 + (id<FBResponsePayload>)handleSuperProcessElement:(FBRouteRequest *)request
