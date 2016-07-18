@@ -39,29 +39,20 @@
 
 - (void)testSimpleScroll
 {
-  [self.tableView fb_scrollDown];
-  FBAssertVisibleCell(@"20");
-  [self.tableView fb_scrollUp];
   FBAssertVisibleCell(@"0");
-}
-
-- (void)testTriplePageScroll
-{
-  FBAssertVisibleCell(@"0");
-  [self.tableView fb_scrollDown];
-  [self.tableView fb_scrollDown];
+  FBAssertVisibleCell(@"10");
   [self.tableView fb_scrollDown];
   FBAssertInvisibleCell(@"0");
-  FBAssertVisibleCell(@"44");
-  [self.tableView fb_scrollUp];
-  [self.tableView fb_scrollUp];
+  FBAssertInvisibleCell(@"10");
+  XCTAssertTrue(self.testedApplication.cells.count > 0);
   [self.tableView fb_scrollUp];
   FBAssertVisibleCell(@"0");
+  FBAssertVisibleCell(@"10");
 }
 
 - (void)testScrollToVisible
 {
-  NSString *cellName = @"20";
+  NSString *cellName = @"30";
   FBAssertInvisibleCell(cellName);
   NSError *error;
   XCTAssertTrue([FBCellElementWithLabel(cellName) fb_scrollToVisibleWithError:&error]);

@@ -9,6 +9,8 @@
 
 #import <WebDriverAgentLib/XCElementSnapshot.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface XCElementSnapshot (Helpers)
 
 /**
@@ -25,7 +27,7 @@
  @param type requested parent type
  @return parent element matching given type
  */
-- (XCElementSnapshot *)fb_parentMatchingType:(XCUIElementType)type;
+- (nullable XCElementSnapshot *)fb_parentMatchingType:(XCUIElementType)type;
 
 /**
  Returns value for given accessibility property identifier.
@@ -36,11 +38,6 @@
 - (id)fb_attributeValue:(NSNumber *)attribute;
 
 /**
- Returns snapshot element of main window
- */
-- (XCElementSnapshot *)fb_mainWindow;
-
-/**
  Method used to determine whether given element matches receiver by comparing it's parameters except frame.
 
  @param snapshot element's snapshot to compare against
@@ -49,3 +46,5 @@
 - (BOOL)fb_framelessFuzzyMatchesElement:(XCElementSnapshot *)snapshot;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -13,6 +13,7 @@
 #import "FBMacros.h"
 #import "XCElementSnapshot+Helpers.h"
 #import "XCElementSnapshot.h"
+#import "XCUIApplication+FBHelpers.h"
 #import "XCUIElement+FBIsVisible.h"
 #import "XCUIElement+FBTap.h"
 #import "XCUIElement+FBScrolling.h"
@@ -23,10 +24,14 @@
 
 + (instancetype)fb_springboard
 {
-  FBSpringboardApplication *springboard = [[FBSpringboardApplication alloc] initPrivateWithPath:nil bundleID:@"com.apple.springboard"];
-  [springboard query];
-  [springboard resolve];
-  return springboard;
+  static FBSpringboardApplication *_springboardApp;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    _springboardApp = [[FBSpringboardApplication alloc] initPrivateWithPath:nil bundleID:@"com.apple.springboard"];
+  });
+  [_springboardApp query];
+  [_springboardApp resolve];
+  return _springboardApp;
 }
 
 - (BOOL)fb_tapApplicationWithIdentifier:(NSString *)identifier error:(NSError **)error
@@ -57,7 +62,7 @@
 - (BOOL)fb_isApplicationBoardVisible
 {
   [self resolve];
-  XCElementSnapshot *mainWindow = self.lastSnapshot.fb_mainWindow;
+  XCElementSnapshot *mainWindow = self.fb_mainWindowSnapshot;
   // During application switch 'SBSwitcherWindow' becomes a main window, so we should wait till it is gone
   return mainWindow.fb_isVisible && ![mainWindow.identifier isEqualToString:@"SBSwitcherWindow"];
 }

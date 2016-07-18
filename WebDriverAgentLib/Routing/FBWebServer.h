@@ -11,12 +11,12 @@
 
 @class RouteResponse, RoutingHTTPServer, FBExceptionHandler;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  HTTP and USB service wrapper, that handel's requests and responses
  */
 @interface FBWebServer : NSObject
-@property (nonatomic, strong, readonly) RoutingHTTPServer *server;
-@property (nonatomic, strong) FBExceptionHandler *exceptionHandler;
 
 /**
  Starts WebDriverAgent service by booting HTTP and USB server
@@ -24,3 +24,5 @@
 - (void)startServing;
 
 @end
+
+NS_ASSUME_NONNULL_END

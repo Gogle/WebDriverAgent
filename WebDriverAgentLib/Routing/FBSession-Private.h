@@ -12,9 +12,10 @@
 @class FBElementCache;
 @class AgentForHost;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface FBSession ()
 @property (nonatomic, copy, readwrite) NSString *identifier;
-@property (nonatomic, copy, readwrite) NSString *activeSessionIdentifier;
 @property (nonatomic, strong, readwrite) FBElementCache *elementCache;
 @property (nonatomic, strong, readwrite) AgentForHost *appAgent;
 
@@ -24,3 +25,5 @@
 + (void)markSessionActive:(FBSession *)session;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -59,6 +59,11 @@
   if (self.elementType == XCUIElementTypeSwitch) {
     value = @([self.value boolValue]);
   }
+  if (self.elementType == XCUIElementTypeTextView ||
+      self.elementType == XCUIElementTypeTextField ||
+      self.elementType == XCUIElementTypeSecureTextField) {
+    value = FBFirstNonEmptyValue(self.value, self.placeholderValue);
+  }
   return FBTransferEmptyStringToNil(value);
 }
 
@@ -133,12 +138,12 @@
 
 - (NSDictionary *)wdSize
 {
-    return self.wdRect[@"size"];
+    return (NSDictionary *_Nonnull)self.wdRect[@"size"];
 }
 
 - (NSDictionary *)wdLocation
 {
-    return self.wdRect[@"origin"];
+    return (NSDictionary *_Nonnull)self.wdRect[@"origin"];
 }
 
 @end

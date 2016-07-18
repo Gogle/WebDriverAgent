@@ -10,6 +10,7 @@
 #import <XCTest/XCTest.h>
 
 extern NSString *const FBShowAlertButtonName;
+extern NSString *const FBShowSheetAlertButtonName;
 
 /**
  XCTestCase helper class used for integration tests
@@ -28,9 +29,9 @@ extern NSString *const FBShowAlertButtonName;
 - (void)goToAlertsPage;
 
 /**
- Navigates to SpringBoard
+ Navigates to SpringBoard first page
  */
-- (void)goToSpringBoard;
+- (void)goToSpringBoardFirstPage;
 
 /**
  Navigates integration app to scrolling page

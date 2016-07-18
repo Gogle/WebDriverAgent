@@ -2,7 +2,7 @@
 
 #import "FBAlertViewController.h"
 
-#import <AssetsLibrary/AssetsLibrary.h>
+#import <Photos/Photos.h>
 #import <CoreLocation/CoreLocation.h>
 
 @interface FBAlertViewController ()
@@ -21,6 +21,18 @@
   [self presentViewController:alerController animated:YES completion:nil];
 }
 
+- (IBAction)createAppSheet:(UIButton *)sender
+{
+    UIAlertController *alerController =
+    [UIAlertController alertControllerWithTitle:@"Magic Sheet"
+                                        message:@"Should read"
+                                 preferredStyle:UIAlertControllerStyleActionSheet];
+    UIPopoverPresentationController *popPresenter = [alerController popoverPresentationController];
+    popPresenter.sourceView = sender;
+    [self presentViewController:alerController animated:YES completion:nil];
+    
+}
+
 - (IBAction)createNotificationAlert:(UIButton *)sender
 {
   [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert categories:nil]];
@@ -28,7 +40,8 @@
 
 - (IBAction)createCameraRollAccessAlert:(UIButton *)sender
 {
-  [[ALAssetsLibrary new] enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:nil failureBlock:nil];
+  [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+  }];
 }
 
 - (IBAction)createGPSAccessAlert:(UIButton *)sender

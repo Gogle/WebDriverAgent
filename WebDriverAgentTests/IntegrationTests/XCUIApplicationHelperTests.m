@@ -23,14 +23,14 @@
 
 - (void)testQueringSpringboard
 {
-  [self goToSpringBoard];
+  [self goToSpringBoardFirstPage];
   XCTAssertTrue([FBSpringboardApplication fb_springboard].icons[@"Safari"].exists);
-  XCTAssertTrue([FBSpringboardApplication fb_springboard].icons[@"Game Center"].exists);
+  XCTAssertTrue([FBSpringboardApplication fb_springboard].icons[@"Calendar"].exists);
 }
 
 - (void)testTappingAppOnSpringboard
 {
-  [self goToSpringBoard];
+  [self goToSpringBoardFirstPage];
   NSError *error;
   XCTAssertTrue([[FBSpringboardApplication fb_springboard] fb_tapApplicationWithIdentifier:@"Safari" error:&error]);
   XCTAssertNil(error);
@@ -67,8 +67,16 @@
 - (void)testActiveApplication
 {
   XCTAssertTrue([FBApplication fb_activeApplication].buttons[@"Alerts"].fb_isVisible);
-  [self goToSpringBoard];
+  [self goToSpringBoardFirstPage];
   XCTAssertTrue([FBApplication fb_activeApplication].icons[@"Safari"].fb_isVisible);
+}
+
+- (void)testMainWindow
+{
+  [self.testedApplication query];
+  [self.testedApplication resolve];
+  XCTAssertNotNil(self.testedApplication.fb_mainWindowSnapshot);
+  XCTAssertTrue(self.testedApplication.fb_mainWindowSnapshot.isMainWindow);
 }
 
 @end

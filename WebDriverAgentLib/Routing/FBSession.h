@@ -13,6 +13,8 @@
 @class FBApplication;
 @class FBElementCache;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /*! Exception used to notify about application crash */
 extern NSString *const FBApplicationCrashedException;
 
@@ -33,7 +35,7 @@ extern NSString *const FBApplicationCrashedException;
 /*! Agent for communicating with tested app related to that session */
 @property (nonatomic, strong, readonly) AgentForHost *appAgent;
 
-+ (instancetype)activeSession;
++ (nullable instancetype)activeSession;
 
 /**
  Fetches session for given identifier.
@@ -42,7 +44,7 @@ extern NSString *const FBApplicationCrashedException;
  @param identifier Identifier for searched session
  @return session. Can return nil if session does not exists
  */
-+ (instancetype)sessionWithIdentifier:(NSString *)identifier;
++ (nullable instancetype)sessionWithIdentifier:(NSString *)identifier;
 
 /**
  Creates and saves new session for application
@@ -60,3 +62,5 @@ extern NSString *const FBApplicationCrashedException;
 - (void)kill;
 
 @end
+
+NS_ASSUME_NONNULL_END
