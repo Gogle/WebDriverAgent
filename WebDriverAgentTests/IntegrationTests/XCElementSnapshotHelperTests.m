@@ -10,24 +10,48 @@
 #import <XCTest/XCTest.h>
 
 #import "FBIntegrationTestCase.h"
-#import "XCElementSnapshot+Helpers.h"
+#import "XCElementSnapshot+FBHelpers.h"
 #import "XCUIElement.h"
 
 @interface XCElementSnapshotHelperTests : FBIntegrationTestCase
+@property (nonatomic, strong) XCUIElement *testedView;
 @end
 
 @implementation XCElementSnapshotHelperTests
 
+- (void)setUp
+{
+  [super setUp];
+  self.testedView = self.testedApplication.otherElements[@"MainView"];
+  XCTAssertTrue(self.testedView.exists);
+  [self.testedView resolve];
+}
+
 - (void)testDescendantsMatchingType
 {
-  XCUIElement *mainView = self.testedApplication.otherElements[@"MainView"];
-  XCTAssertTrue(mainView.exists);
-  [mainView resolve];
-  NSArray<XCElementSnapshot *> *matchingSnapshots = [mainView.lastSnapshot fb_descendantsMatchingType:XCUIElementTypeButton];
-  XCTAssertTrue(matchingSnapshots.count >= 3);
-  XCElementSnapshot *buttonSnapshot = [[matchingSnapshots filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"label = %@", @"Alerts"]] lastObject];
-  XCTAssertEqualObjects(buttonSnapshot.label, @"Alerts");
-  XCTAssertEqual(buttonSnapshot.elementType, XCUIElementTypeButton);
+  NSSet<NSString *> *expectedLabels = [NSSet setWithArray:@[
+    @"Alerts",
+    @"Attributes",
+    @"Contacts",
+    @"Scrolling",
+    @"Deadlock app",
+  ]];
+  NSArray<XCElementSnapshot *> *matchingSnapshots = [self.testedView.lastSnapshot fb_descendantsMatchingType:XCUIElementTypeButton];
+  XCTAssertEqual(matchingSnapshots.count, expectedLabels.count);
+  NSArray<NSString *> *labels = [matchingSnapshots valueForKeyPath:@"@distinctUnionOfObjects.label"];
+  XCTAssertEqualObjects([NSSet setWithArray:labels], expectedLabels);
+
+  NSArray<NSNumber *> *types = [matchingSnapshots valueForKeyPath:@"@distinctUnionOfObjects.elementType"];
+  XCTAssertEqual(types.count, 1, @"matchingSnapshots should contain only one type");
+  XCTAssertEqualObjects(types.lastObject, @(XCUIElementTypeButton), @"matchingSnapshots should contain only one type");
+}
+
+- (void)testDescendantsMatchingXPath
+{
+  NSArray<XCElementSnapshot *> *matchingSnapshots = [self.testedView.lastSnapshot fb_descendantsMatchingXPathQuery:@"//XCUIElementTypeButton[@label='Alerts']"];
+  XCTAssertEqual(matchingSnapshots.count, 1);
+  XCTAssertEqual(matchingSnapshots.lastObject.elementType, XCUIElementTypeButton);
+  XCTAssertEqualObjects(matchingSnapshots.lastObject.label, @"Alerts");
 }
 
 - (void)testParentMatchingType
@@ -38,6 +62,38 @@
   XCElementSnapshot *windowSnapshot = [button.lastSnapshot fb_parentMatchingType:XCUIElementTypeWindow];
   XCTAssertNotNil(windowSnapshot);
   XCTAssertEqual(windowSnapshot.elementType, XCUIElementTypeWindow);
+}
+
+- (void)testParentMatchingOneOfTypes
+{
+  [self goToAttributesPage];
+  XCUIElement *todayPickerWheel = self.testedApplication.pickerWheels[@"Today"];
+  XCTAssertTrue(todayPickerWheel.exists);
+  [todayPickerWheel resolve];
+  XCElementSnapshot *datePicker = [todayPickerWheel.lastSnapshot fb_parentMatchingOneOfTypes:@[@(XCUIElementTypeDatePicker), @(XCUIElementTypeWindow)]];
+  XCTAssertNotNil(datePicker);
+  XCTAssertEqual(datePicker.elementType, XCUIElementTypeDatePicker);
+}
+
+- (void)testParentMatchingOneOfTypesWithXCUIElementTypeAny
+{
+  [self goToAttributesPage];
+  XCUIElement *todayPickerWheel = self.testedApplication.pickerWheels[@"Today"];
+  XCTAssertTrue(todayPickerWheel.exists);
+  [todayPickerWheel resolve];
+  XCElementSnapshot *otherSnapshot = [todayPickerWheel.lastSnapshot fb_parentMatchingOneOfTypes:@[@(XCUIElementTypeAny), @(XCUIElementTypeWindow)]];
+  XCTAssertNotNil(otherSnapshot);
+  XCTAssertEqual(otherSnapshot.elementType, XCUIElementTypeOther);
+}
+
+- (void)testParentMatchingOneOfTypesWithAbsentParents
+{
+  [self goToAttributesPage];
+  XCUIElement *todayPickerWheel = self.testedApplication.pickerWheels[@"Today"];
+  XCTAssertTrue(todayPickerWheel.exists);
+  [todayPickerWheel resolve];
+  XCElementSnapshot *otherSnapshot = [todayPickerWheel.lastSnapshot fb_parentMatchingOneOfTypes:@[@(XCUIElementTypeTab), @(XCUIElementTypeLink)]];
+  XCTAssertNil(otherSnapshot);
 }
 
 @end

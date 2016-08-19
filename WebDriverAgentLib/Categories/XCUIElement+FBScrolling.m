@@ -13,7 +13,7 @@
 #import "FBRunLoopSpinner.h"
 #import "FBLogger.h"
 #import "FBMacros.h"
-#import "XCElementSnapshot+Helpers.h"
+#import "XCElementSnapshot+FBHelpers.h"
 #import "XCElementSnapshot-Hitpoint.h"
 #import "XCElementSnapshot.h"
 #import "XCEventGenerator.h"
@@ -80,9 +80,13 @@ const CGFloat FBMinimumTouchEventDelay = 0.1f;
   if (self.fb_isVisible) {
     return YES;
   }
-  XCElementSnapshot *scrollView = [self.lastSnapshot fb_parentMatchingType:XCUIElementTypeScrollView];
-  scrollView = scrollView ?: [self.lastSnapshot fb_parentMatchingType:XCUIElementTypeTable];
-  scrollView = scrollView ?: [self.lastSnapshot fb_parentMatchingType:XCUIElementTypeCollectionView];
+  NSArray *possibleParents = @[
+                               @(XCUIElementTypeScrollView),
+                               @(XCUIElementTypeCollectionView),
+                               @(XCUIElementTypeTable),
+                              ];
+    
+  XCElementSnapshot *scrollView = [self.lastSnapshot fb_parentMatchingOneOfTypes:possibleParents];
 
   XCElementSnapshot *targetCellSnapshot = self.fb_parentCellSnapshot;
   NSArray<XCElementSnapshot *> *cellSnapshots = [scrollView fb_descendantsMatchingType:XCUIElementTypeCell];

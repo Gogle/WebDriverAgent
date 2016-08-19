@@ -11,7 +11,7 @@
 
 #import "FBRunLoopSpinner.h"
 #import "FBMacros.h"
-#import "XCElementSnapshot+Helpers.h"
+#import "XCElementSnapshot+FBHelpers.h"
 #import "XCElementSnapshot.h"
 #import "XCUIApplication+FBHelpers.h"
 #import "XCUIElement+FBIsVisible.h"
@@ -45,7 +45,13 @@
   if (![appElement fb_tapWithError:error]) {
     return NO;
   }
-  return YES;
+  return
+  [[[[FBRunLoopSpinner new]
+     interval:0.3]
+    timeoutErrorMessage:@"Timeout waiting for application to activate"]
+   spinUntilTrue:^BOOL{
+     return !self.fb_mainWindowSnapshot.fb_isVisible;
+   } error:error];
 }
 
 - (BOOL)fb_waitUntilApplicationBoardIsVisible:(NSError **)error

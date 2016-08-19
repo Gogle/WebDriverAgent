@@ -11,7 +11,7 @@
 
 #import "FBRunLoopSpinner.h"
 #import "FBLogger.h"
-#import "XCUIElement+Utilities.h"
+#import "XCUIElement+FBUtilities.h"
 #import "XCElementSnapshot-Hitpoint.h"
 #import "XCEventGenerator.h"
 #import "XCSynthesizedEventRecord.h"
@@ -23,7 +23,8 @@
   [self fb_waitUntilFrameIsStable];
   __block BOOL didSucceed;
   [FBRunLoopSpinner spinUntilCompletion:^(void(^completion)()){
-    [[XCEventGenerator sharedGenerator] tapAtPoint:self.lastSnapshot.hitPoint orientation:self.interfaceOrientation handler:^(XCSynthesizedEventRecord *record, NSError *commandError) {
+    CGPoint hitPoint = self.isHittable ? self.lastSnapshot.hitPoint : [self coordinateWithNormalizedOffset:CGVectorMake(0.5, 0.5)].screenPoint;
+    XCEventGeneratorHandler handlerBlock = ^(XCSynthesizedEventRecord *record, NSError *commandError) {
       if (commandError) {
         [FBLogger logFmt:@"Failed to perform tap: %@", commandError];
       }
@@ -32,7 +33,14 @@
       }
       didSucceed = (commandError == nil);
       completion();
-    }];
+    };
+    XCEventGenerator *eventGenerator = [XCEventGenerator sharedGenerator];
+    if ([eventGenerator respondsToSelector:@selector(tapAtTouchLocations:numberOfTaps:orientation:handler:)]) {
+      [eventGenerator tapAtTouchLocations:@[[NSValue valueWithCGPoint:hitPoint]] numberOfTaps:1 orientation:self.interfaceOrientation handler:handlerBlock];
+    }
+    else {
+      [eventGenerator tapAtPoint:hitPoint orientation:self.interfaceOrientation handler:handlerBlock];
+    }
   }];
   return didSucceed;
 }

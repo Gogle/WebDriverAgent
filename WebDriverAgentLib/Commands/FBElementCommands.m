@@ -24,8 +24,8 @@
 #import "XCUIElement+FBIsVisible.h"
 #import "XCUIElement+FBScrolling.h"
 #import "XCUIElement+FBTap.h"
-#import "XCUIElement+Utilities.h"
-#import "XCUIElement+WebDriverAttributes.h"
+#import "XCUIElement+FBUtilities.h"
+#import "XCUIElement+FBWebDriverAttributes.h"
 #import "FBElementTypeTransformer.h"
 #import "XCUIElement.h"
 #import "XCUIElementQuery.h"
@@ -51,7 +51,7 @@
     [[FBRoute GET:@"/element/:uuid/displayed"] respondWithTarget:self action:@selector(handleGetDisplayed:)],
     [[FBRoute GET:@"/element/:uuid/accessible"] respondWithTarget:self action:@selector(handleGetAccessible:)],
     [[FBRoute GET:@"/element/:uuid/name"] respondWithTarget:self action:@selector(handleGetName:)],
-    [[FBRoute POST:@"/element/:uuid/value"] respondWithTarget:self action:@selector(handleGetValue:)],
+    [[FBRoute POST:@"/element/:uuid/value"] respondWithTarget:self action:@selector(handleSetValue:)],
     [[FBRoute POST:@"/element/:uuid/click"] respondWithTarget:self action:@selector(handleClick:)],
     [[FBRoute POST:@"/element/:uuid/clear"] respondWithTarget:self action:@selector(handleClear:)],
     [[FBRoute POST:@"/uiaElement/:uuid/doubleTap"] respondWithTarget:self action:@selector(handleDoubleTap:)],
@@ -154,16 +154,24 @@
   return FBResponseWithStatus(FBCommandStatusNoError, type);
 }
 
-+ (id<FBResponsePayload>)handleGetValue:(FBRouteRequest *)request
++ (id<FBResponsePayload>)handleSetValue:(FBRouteRequest *)request
 {
   FBElementCache *elementCache = request.session.elementCache;
   NSString *elementUUID = request.parameters[@"uuid"];
   XCUIElement *element = [elementCache elementForUUID:elementUUID];
+  id value = request.arguments[@"value"];
+  if (!value) {
+    return FBResponseWithErrorFormat(@"Missing 'value' parameter");
+  }
+  if (element.elementType == XCUIElementTypePickerWheel) {
+    [element adjustToPickerWheelValue:value];
+    return FBResponseWithOK();
+  }
   NSError *error = nil;
   if (!element.hasKeyboardFocus && ![element fb_tapWithError:&error]) {
     return FBResponseWithError(error);
   }
-  NSString *textToType = [request.arguments[@"value"] componentsJoinedByString:@""];
+  NSString *textToType = [value componentsJoinedByString:@""];
   if (![FBKeyboard typeText:textToType error:&error]) {
     return FBResponseWithError(error);
   }

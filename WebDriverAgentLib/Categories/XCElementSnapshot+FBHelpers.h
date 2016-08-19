@@ -11,15 +11,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface XCElementSnapshot (Helpers)
+@interface XCElementSnapshot (FBHelpers)
 
 /**
- Returns an array of descendants matching give type
+ Returns an array of descendants matching given type
 
  @param type requested descendant type
- @return an array of descendants matching give type
+ @return an array of descendants matching given type
  */
 - (NSArray<XCElementSnapshot *> *)fb_descendantsMatchingType:(XCUIElementType)type;
+
+/**
+ Returns an array of descendants matching given xpath query
+
+ @param xpathQuery requested xpath query
+ @return an array of descendants matching given xpath query
+ */
+- (NSArray<XCElementSnapshot *> *)fb_descendantsMatchingXPathQuery:(NSString *)xpathQuery;
 
 /**
  Returns first (going up element tree) parent that matches given type. If non found returns nil.
@@ -28,6 +36,14 @@ NS_ASSUME_NONNULL_BEGIN
  @return parent element matching given type
  */
 - (nullable XCElementSnapshot *)fb_parentMatchingType:(XCUIElementType)type;
+
+/**
+ Returns first (going up element tree) parent that matches one of given types. If non found returns nil.
+ 
+ @param types possible parent types
+ @return parent element matching one of given types
+ */
+- (nullable XCElementSnapshot *)fb_parentMatchingOneOfTypes:(NSArray<NSNumber *> *)types;
 
 /**
  Returns value for given accessibility property identifier.

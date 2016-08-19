@@ -47,7 +47,7 @@ class App extends React.Component {
   }
 
   fetchTree() {
-    HTTP.post(TREE_ENDPOINT, (treeInfo) => {
+    HTTP.get(TREE_ENDPOINT, (treeInfo) => {
       this.setState({
         rootNode: TreeNode.buildNode(treeInfo.tree, new TreeContext()),
       });
@@ -59,7 +59,8 @@ class App extends React.Component {
   		<div id="app">
   			<Screen
           highlightedNode={this.state.highlightedNode}
-          screenshot={this.state.screenshot} />
+          screenshot={this.state.screenshot}
+          rootNode={this.state.rootNode} />
   			<Tree
           onHighlightedNodeChange={(node) => {
             this.setState({
