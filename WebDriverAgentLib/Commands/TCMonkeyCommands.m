@@ -29,7 +29,6 @@
     [[FBRoute POST:@"/getTestedAppTree"] respondWithTarget:self action:@selector(handleGetTestedAppTree:)],
     [[FBRoute POST:@"/superProcess"] respondWithTarget:self action:@selector(handleSuperProcessElement:)],
     [[FBRoute POST:@"/connectToApp"] respondWithTarget:self action:@selector(handleConnectToAppAtPort:)],
-    [[FBRoute GET:@"/getViewController"] respondWithTarget:self action:@selector(handleGetViewController:)],
     ];
 }
 
@@ -67,11 +66,6 @@
   NSLog(@"Calling ConnectToApp at port %@", port);
   [request.session.appAgent connectToLocalIPv4AtPort:(in_port_t)[port intValue]];
   return FBResponseWithOK();
-}
-
-+ (id<FBResponsePayload>)handleGetViewController:(FBRouteRequest *)request
-{
-  return FBResponseWithObject([request.session.appAgent currentViewController]);
 }
 
 + (NSError *)processElementWithType:(XCUIElementType)type atIndex:(NSUInteger)index under:(XCUIElement *)element usingValue:(NSString *)value

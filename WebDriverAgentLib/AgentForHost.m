@@ -10,10 +10,13 @@
 #import <peertalk/PTChannel.h>
 #import <Foundation/Foundation.h>
 
+static const uint32_t GGUSBFrameType = 104;
+
 @interface AgentForHost() <PTChannelDelegate>
 @property (atomic, strong) PTChannel *serverChannel;
 @property (atomic, strong) PTChannel *peerChannel;
 @property (atomic, strong) PTChannel *connectedChannel;
+@property (atomic, strong) NSDictionary *frameCache;
 @end
 
 @implementation AgentForHost
@@ -24,6 +27,22 @@
     [self.connectedChannel close];
     self.connectedChannel = nil;
   }
+}
+
+- (void)sendJSON:(NSDictionary *)info
+{
+    //    NSLog(@"%@ in sendJSON", prefix);
+    if (!self.connectedChannel) {
+        return;
+    }
+    NSData *data = [NSJSONSerialization dataWithJSONObject:info options:NSJSONWritingPrettyPrinted error:nil];
+    dispatch_data_t payload = [data createReferencingDispatchData];
+    uint32_t tagno = [self.connectedChannel.protocol newTag];
+    [self.connectedChannel sendFrameOfType:GGUSBFrameType tag:tagno withPayload:payload callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Failed to send json: %@", error);
+        }
+    }];
 }
 
 - (void)connectToLocalIPv4AtPort:(in_port_t)port {
@@ -51,14 +70,17 @@
     PTExampleTextFrame *textFrame = (PTExampleTextFrame*)payload.data;
     textFrame->length = ntohl(textFrame->length);
     NSString *message = [[NSString alloc] initWithBytes:textFrame->utf8text length:textFrame->length encoding:NSUTF8StringEncoding];
-    self.currentViewController = message;
-    NSLog(@"VC: %@", self.currentViewController);
+    NSLog(@"Receive a text from test app: %@", message);
+  } else if (type == GGUSBFrameType) {
+      NSData *data = [NSData dataWithContentsOfDispatchData:payload.dispatchData];
+      NSDictionary *parsed = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+      NSLog(@"Received a json from tested app: %@", parsed);
   }
 }
 
 - (BOOL)ioFrameChannel:(PTChannel *)channel shouldAcceptFrameOfType:(uint32_t)type tag:(uint32_t)tag payloadSize:(uint32_t)payloadSize
 {
-  return (type == TCFrameTypeTextMessage);
+  return (type == TCFrameTypeTextMessage || type == GGUSBFrameType);
 }
 
 @end

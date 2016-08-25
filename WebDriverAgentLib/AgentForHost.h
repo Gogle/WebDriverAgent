@@ -19,6 +19,5 @@ typedef struct _PTExampleTextFrame {
 } PTExampleTextFrame;
 
 @interface AgentForHost : NSObject
-@property (atomic, strong) NSString *currentViewController;
 - (void)connectToLocalIPv4AtPort:(in_port_t)port;
 @end
