@@ -16,9 +16,9 @@
 
 #import "FBLogger.h"
 
-#define FBValidateObjectWithClass(object, aClass) \
+#define FBValidateObjectWithClass(object, aClass, tag) \
     if (object && ![object isKindOfClass:aClass]) { \
-      [self respondWithErrorMessage:[NSString stringWithFormat:@"Invalid object class %@ for %@", [object class], @#object]]; \
+      [self respondWithErrorMessage:[NSString stringWithFormat:@"Invalid object class %@ for %@", [object class], @#object] tag:tag]; \
       return; \
     }
 
@@ -63,19 +63,19 @@ static const uint32_t FBUSBFrameType = 100;
   }];
 }
 
-- (void)handleRequestData:(NSData *)data
+- (void)handleRequestData:(NSData *)data tag:(uint32_t)tag
 {
   NSError *error;
   NSDictionary *requestDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
   if (!requestDictionary) {
-    [self respondWithErrorMessage:error.description];
+    [self respondWithErrorMessage:error.description tag:tag];
     return;
   }
-  FBValidateObjectWithClass(requestDictionary, NSDictionary.class);
-  FBValidateObjectWithClass(requestDictionary[@"uuid"], NSString.class);
-  FBValidateObjectWithClass(requestDictionary[@"method"], NSString.class);
-  FBValidateObjectWithClass(requestDictionary[@"path"], NSString.class);
-  FBValidateObjectWithClass(requestDictionary[@"parameters"], NSDictionary.class);
+  FBValidateObjectWithClass(requestDictionary, NSDictionary.class, tag);
+  FBValidateObjectWithClass(requestDictionary[@"uuid"], NSString.class, tag);
+  FBValidateObjectWithClass(requestDictionary[@"method"], NSString.class, tag);
+  FBValidateObjectWithClass(requestDictionary[@"path"], NSString.class, tag);
+  FBValidateObjectWithClass(requestDictionary[@"parameters"], NSDictionary.class, tag);
 
   NSString *uuid = requestDictionary[@"uuid"];
   NSString *method = requestDictionary[@"method"];
@@ -87,7 +87,7 @@ static const uint32_t FBUSBFrameType = 100;
   if (parameters) {
     body = [NSJSONSerialization dataWithJSONObject:parameters options:NSJSONWritingPrettyPrinted error:&error];
     if (!body) {
-      [self respondWithErrorMessage:[NSString stringWithFormat:@"Failed to encode request body. %@", error]];
+      [self respondWithErrorMessage:[NSString stringWithFormat:@"Failed to encode request body. %@", error] tag:tag];
       return;
     }
   }
@@ -98,7 +98,7 @@ static const uint32_t FBUSBFrameType = 100;
   NSData *JSONResponseData = [response.response readDataOfLength:(NSUInteger)response.response.contentLength];
   NSDictionary *httpResponse = [NSJSONSerialization JSONObjectWithData:JSONResponseData options:NSJSONReadingMutableContainers error:&error];
   if (!httpResponse) {
-    [self respondWithErrorMessage:[NSString stringWithFormat:@"Failed to decode JSON repsonse. %@", error]];
+    [self respondWithErrorMessage:[NSString stringWithFormat:@"Failed to decode JSON repsonse. %@", error] tag:tag];
     return;
   }
 
@@ -112,20 +112,21 @@ static const uint32_t FBUSBFrameType = 100;
                                                          options:NSJSONWritingPrettyPrinted
                                                            error:&error];
   if (!responseData) {
-    [self respondWithErrorMessage:[NSString stringWithFormat:@"Failed to encode repsonse. %@", error]];
+    [self respondWithErrorMessage:[NSString stringWithFormat:@"Failed to encode repsonse. %@", error] tag:tag];
     return;
   }
-  [self respondWithData:responseData];
+  [self respondWithData:responseData tag:tag];
 }
 
-- (void)respondWithErrorMessage:(NSString *)errorMessage
+- (void)respondWithErrorMessage:(NSString *)errorMessage tag:(uint32_t)tag
 {
   [self respondWithData:[NSJSONSerialization dataWithJSONObject:@{@"error" : errorMessage ?: @"FBHTTPOverUSBServer failed with no error."}
                                                        options:NSJSONWritingPrettyPrinted
-                                                         error:nil]];
+                                                         error:nil]
+                    tag:tag];
 }
 
-- (void)respondWithData:(NSData *)data
+- (void)respondWithData:(NSData *)data tag:(uint32_t)tag
 {
   void (^completionBlock)(NSError *) = ^(NSError *innerError){
     if (innerError) {
@@ -133,7 +134,7 @@ static const uint32_t FBUSBFrameType = 100;
     }
   };
   [self.peerChannel sendFrameOfType:FBUSBFrameType
-                                tag:PTFrameNoTag
+                                tag:tag
                         withPayload:data.createReferencingDispatchData
                            callback:completionBlock];
 }
@@ -151,7 +152,7 @@ static const uint32_t FBUSBFrameType = 100;
     return;
   }
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    [self handleRequestData:[NSData dataWithContentsOfDispatchData:payload.dispatchData]];
+    [self handleRequestData:[NSData dataWithContentsOfDispatchData:payload.dispatchData] tag:tag];
   });
 }
 
