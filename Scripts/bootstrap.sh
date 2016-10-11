@@ -38,13 +38,18 @@ function print_usage() {
   echo "Usage:"
   echo $'\t -i Build Inspector bundle'
   echo $'\t -d Fetch & build dependencies'
+  echo $'\t -D Fetch & build dependencies using SSH for downloading GitHub repositories'
   echo $'\t -h print this help'
 }
 
 function fetch_and_build_dependencies() {
   echo -e "${BOLD}Fetching dependencies"
   assert_has_carthage
-  carthage bootstrap
+  if ! cmp -s Cartfile.resolved Carthage/Cartfile.resolved; then
+    carthage bootstrap $USE_SSH
+    cp Cartfile.resolved Carthage
+  fi
+
 }
 
 function build_inspector() {
@@ -70,16 +75,17 @@ function build_inspector() {
   echo "Done"
 }
 
-while getopts " i d h " option; do
+while getopts " i d D h " option; do
   case "$option" in
     i ) BUILD_INSPECTOR=1;;
-    d ) FECHT_DEPS=1;;
+    d ) FETCH_DEPS=1;;
+    D ) FETCH_DEPS=1; USE_SSH="--use-ssh";;
     h ) print_usage; exit 1;;
     *) exit 1 ;;
-    esac
+  esac
 done
 
-if [[ -n ${FECHT_DEPS+x} ]]; then
+if [[ -n ${FETCH_DEPS+x} ]]; then
   fetch_and_build_dependencies
 fi
 
@@ -87,7 +93,7 @@ if [[ -n ${BUILD_INSPECTOR+x} ]]; then
   build_inspector
 fi
 
-if [[ -z ${FECHT_DEPS+x} && -z ${BUILD_INSPECTOR+x} ]]; then
+if [[ -z ${FETCH_DEPS+x} && -z ${BUILD_INSPECTOR+x} ]]; then
   fetch_and_build_dependencies
   build_inspector
 fi

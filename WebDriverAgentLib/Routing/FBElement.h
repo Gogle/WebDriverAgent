@@ -28,12 +28,6 @@ NSString *wdAttributeNameForAttributeName(NSString *name);
 /*! Element's frame in NSDictionary format */
 @property (nonatomic, readonly, copy) NSDictionary *wdRect;
 
-/*! Element's size */
-@property (nonatomic, readonly, copy) NSDictionary *wdSize;
-
-/*! Element's origin */
-@property (nonatomic, readonly, copy) NSDictionary *wdLocation;
-
 /*! Element's name */
 @property (nonatomic, readonly, copy) NSString *wdName;
 
@@ -54,6 +48,9 @@ NSString *wdAttributeNameForAttributeName(NSString *name);
 
 /*! Whether element is accessible */
 @property (nonatomic, readonly, getter = isWDAccessible) BOOL wdAccessible;
+
+/*! Whether element is an accessibility container (contains children of any depth that are accessible) */
+@property (nonatomic, readonly, getter = isWDAccessibilityContainer) BOOL wdAccessibilityContainer;
 
 /**
  Returns value of given property specified in WebDriver Spec

@@ -24,6 +24,7 @@
 #import "XCUIElement+FBIsVisible.h"
 #import "XCUIElement+FBScrolling.h"
 #import "XCUIElement+FBTap.h"
+#import "XCUIElement+FBTyping.h"
 #import "XCUIElement+FBUtilities.h"
 #import "XCUIElement+FBWebDriverAttributes.h"
 #import "FBElementTypeTransformer.h"
@@ -43,24 +44,24 @@
   @[
     [[FBRoute GET:@"/element/:uuid/enabled"] respondWithTarget:self action:@selector(handleGetEnabled:)],
     [[FBRoute GET:@"/element/:uuid/rect"] respondWithTarget:self action:@selector(handleGetRect:)],
-    [[FBRoute GET:@"/element/:uuid/size"] respondWithTarget:self action:@selector(handleGetSize:)],
-    [[FBRoute GET:@"/element/:uuid/location"] respondWithTarget:self action:@selector(handleGetLocation:)],
-    [[FBRoute GET:@"/element/:uuid/location_in_view"] respondWithTarget:self action:@selector(handleGetLocationInView:)],
     [[FBRoute GET:@"/element/:uuid/attribute/:name"] respondWithTarget:self action:@selector(handleGetAttribute:)],
     [[FBRoute GET:@"/element/:uuid/text"] respondWithTarget:self action:@selector(handleGetText:)],
     [[FBRoute GET:@"/element/:uuid/displayed"] respondWithTarget:self action:@selector(handleGetDisplayed:)],
     [[FBRoute GET:@"/element/:uuid/accessible"] respondWithTarget:self action:@selector(handleGetAccessible:)],
+    [[FBRoute GET:@"/element/:uuid/accessibilityContainer"] respondWithTarget:self action:@selector(handleGetIsAccessibilityContainer:)],
     [[FBRoute GET:@"/element/:uuid/name"] respondWithTarget:self action:@selector(handleGetName:)],
     [[FBRoute POST:@"/element/:uuid/value"] respondWithTarget:self action:@selector(handleSetValue:)],
     [[FBRoute POST:@"/element/:uuid/click"] respondWithTarget:self action:@selector(handleClick:)],
     [[FBRoute POST:@"/element/:uuid/clear"] respondWithTarget:self action:@selector(handleClear:)],
     [[FBRoute POST:@"/uiaElement/:uuid/doubleTap"] respondWithTarget:self action:@selector(handleDoubleTap:)],
+    [[FBRoute POST:@"/uiaElement/:uuid/twoFingerTap"] respondWithTarget:self action:@selector(handleTwoFingerTap:)],
     [[FBRoute POST:@"/uiaElement/:uuid/touchAndHold"] respondWithTarget:self action:@selector(handleTouchAndHold:)],
     [[FBRoute POST:@"/uiaElement/:uuid/scroll"] respondWithTarget:self action:@selector(handleScroll:)],
-    [[FBRoute POST:@"/uiaElement/:uuid/value"] respondWithTarget:self action:@selector(handleGetUIAElementValue:)],
     [[FBRoute POST:@"/uiaTarget/:uuid/dragfromtoforduration"] respondWithTarget:self action:@selector(handleDrag:)],
     [[FBRoute POST:@"/tap/:uuid"] respondWithTarget:self action:@selector(handleTap:)],
     [[FBRoute POST:@"/keys"] respondWithTarget:self action:@selector(handleKeys:)],
+    [[FBRoute GET:@"/window/size"] respondWithTarget:self action:@selector(handleGetWindowSize:)],
+    // TODO: This API call should be deprecated and replaced with the one above without the extra :uuid parameter
     [[FBRoute GET:@"/window/:uuid/size"] respondWithTarget:self action:@selector(handleGetWindowSize:)],
   ];
 }
@@ -81,31 +82,6 @@
   FBElementCache *elementCache = request.session.elementCache;
   XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
   return FBResponseWithStatus(FBCommandStatusNoError, element.wdRect);
-}
-
-+ (id<FBResponsePayload>)handleGetSize:(FBRouteRequest *)request
-{
-  FBElementCache *elementCache = request.session.elementCache;
-  XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
-  return FBResponseWithStatus(FBCommandStatusNoError, element.wdSize);
-}
-
-+ (id<FBResponsePayload>)handleGetLocation:(FBRouteRequest *)request
-{
-  FBElementCache *elementCache = request.session.elementCache;
-  XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
-  return FBResponseWithStatus(FBCommandStatusNoError, element.wdLocation);
-}
-
-+ (id<FBResponsePayload>)handleGetLocationInView:(FBRouteRequest *)request
-{
-  FBElementCache *elementCache = request.session.elementCache;
-  XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
-  NSError *error;
-  if ([element fb_scrollToVisibleWithError:&error]) {
-    return FBResponseWithStatus(FBCommandStatusNoError, element.wdLocation);
-  }
-  return FBResponseWithError(error);
 }
 
 + (id<FBResponsePayload>)handleGetAttribute:(FBRouteRequest *)request
@@ -146,6 +122,13 @@
   return FBResponseWithStatus(FBCommandStatusNoError, @(element.isWDAccessible));
 }
 
++ (id<FBResponsePayload>)handleGetIsAccessibilityContainer:(FBRouteRequest *)request
+{
+  FBElementCache *elementCache = request.session.elementCache;
+  XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
+  return FBResponseWithStatus(FBCommandStatusNoError, @(element.isWDAccessibilityContainer));
+}
+
 + (id<FBResponsePayload>)handleGetName:(FBRouteRequest *)request
 {
   FBElementCache *elementCache = request.session.elementCache;
@@ -163,16 +146,19 @@
   if (!value) {
     return FBResponseWithErrorFormat(@"Missing 'value' parameter");
   }
+  NSString *textToType = value;
+  if ([value isKindOfClass:[NSArray class]]) {
+    textToType = [value componentsJoinedByString:@""];
+  }
   if (element.elementType == XCUIElementTypePickerWheel) {
-    [element adjustToPickerWheelValue:value];
+    [element adjustToPickerWheelValue:textToType];
     return FBResponseWithOK();
   }
   NSError *error = nil;
-  if (!element.hasKeyboardFocus && ![element fb_tapWithError:&error]) {
+  if (![element fb_scrollToVisibleWithError:&error]) {
     return FBResponseWithError(error);
   }
-  NSString *textToType = [value componentsJoinedByString:@""];
-  if (![FBKeyboard typeText:textToType error:&error]) {
+  if (![element fb_typeText:textToType error:&error]) {
     return FBResponseWithError(error);
   }
   return FBResponseWithElementUUID(elementUUID);
@@ -184,6 +170,9 @@
   NSString *elementUUID = request.parameters[@"uuid"];
   XCUIElement *element = [elementCache elementForUUID:elementUUID];
   NSError *error = nil;
+  if (![element fb_scrollToVisibleWithError:&error]) {
+    return FBResponseWithError(error);
+  }
   if (![element fb_tapWithError:&error]) {
     return FBResponseWithError(error);
   }
@@ -196,14 +185,10 @@
   NSString *elementUUID = request.parameters[@"uuid"];
   XCUIElement *element = [elementCache elementForUUID:elementUUID];
   NSError *error;
-  if (!element.hasKeyboardFocus && ![element fb_tapWithError:&error]) {
+  if (![element fb_scrollToVisibleWithError:&error]) {
     return FBResponseWithError(error);
   }
-  NSMutableString *textToType = @"".mutableCopy;
-  for (NSUInteger i = 0 ; i < [element.value length] ; i++) {
-    [textToType appendString:@"\b"];
-  }
-  if (![FBKeyboard typeText:textToType error:&error]) {
+  if (![element fb_clearTextWithError:&error]) {
     return FBResponseWithError(error);
   }
   return FBResponseWithElementUUID(elementUUID);
@@ -213,14 +198,34 @@
 {
   FBElementCache *elementCache = request.session.elementCache;
   XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
+  NSError *error;
+  if (![element fb_scrollToVisibleWithError:&error]) {
+    return FBResponseWithError(error);
+  }
   [element doubleTap];
   return FBResponseWithOK();
+}
+
++ (id<FBResponsePayload>)handleTwoFingerTap:(FBRouteRequest *)request
+{
+    FBElementCache *elementCache = request.session.elementCache;
+    XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
+    NSError *error;
+    if (![element fb_scrollToVisibleWithError:&error]) {
+      return FBResponseWithError(error);
+    }
+    [element twoFingerTap];
+    return FBResponseWithOK();
 }
 
 + (id<FBResponsePayload>)handleTouchAndHold:(FBRouteRequest *)request
 {
   FBElementCache *elementCache = request.session.elementCache;
   XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
+  NSError *error;
+  if (![element fb_scrollToVisibleWithError:&error]) {
+    return FBResponseWithError(error);
+  }
   [element pressForDuration:[request.arguments[@"duration"] doubleValue]];
   return FBResponseWithOK();
 }
@@ -229,7 +234,10 @@
 {
   FBElementCache *elementCache = request.session.elementCache;
   XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
-
+  NSError *error;
+  if (![element fb_scrollToVisibleWithError:&error]) {
+    return FBResponseWithError(error);
+  }
   // Using presence of arguments as a way to convey control flow seems like a pretty bad idea but it's
   // what ios-driver did and sadly, we must copy them.
   NSString *const name = request.arguments[@"name"];
@@ -266,21 +274,6 @@
   return FBResponseWithErrorFormat(@"Unsupported scroll type");
 }
 
-+ (id<FBResponsePayload>)handleGetUIAElementValue:(FBRouteRequest *)request
-{
-    FBElementCache *elementCache = request.session.elementCache;
-    XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
-    if (element.elementType != XCUIElementTypePickerWheel) {
-        return FBResponseWithErrorFormat(@"Element is not of type %@", [FBElementTypeTransformer shortStringWithElementType:XCUIElementTypePickerWheel]);
-    }
-    NSString *wheelPickerValue = request.arguments[@"value"];
-    if (!wheelPickerValue) {
-        return FBResponseWithErrorFormat(@"Missing value parameter");
-    }
-    [element adjustToPickerWheelValue:wheelPickerValue];
-    return FBResponseWithOK();
-}
-
 + (id<FBResponsePayload>)handleDrag:(FBRouteRequest *)request
 {
   FBSession *session = request.session;
@@ -302,6 +295,10 @@
   CGFloat y = (CGFloat)[request.arguments[@"y"] doubleValue];
   XCUIElement *element = [elementCache elementForUUID:request.parameters[@"uuid"]];
   if (element != nil) {
+    NSError *error;
+    if (![element fb_scrollToVisibleWithError:&error]) {
+      return FBResponseWithError(error);
+    }
     CGRect rect = element.frame;
     x += rect.origin.x;
     y += rect.origin.y;
@@ -324,8 +321,11 @@
 
 + (id<FBResponsePayload>)handleGetWindowSize:(FBRouteRequest *)request
 {
-  FBSession *session = request.session;
-  return FBResponseWithStatus(FBCommandStatusNoError, session.application.wdRect[@"size"]);
+  CGRect frame = request.session.application.wdFrame;
+  return FBResponseWithStatus(FBCommandStatusNoError, @{
+    @"width": @(CGRectGetWidth(frame)),
+    @"height": @(CGRectGetHeight(frame)),
+  });
 }
 
 

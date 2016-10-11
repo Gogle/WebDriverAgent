@@ -52,7 +52,7 @@ extern NSString *const FBApplicationCrashedException;
  @param application The application that we want to create session for
  @return new session
  */
-+ (instancetype)sessionWithApplication:(FBApplication *)application;
++ (instancetype)sessionWithApplication:(nullable FBApplication *)application;
 
 - (BOOL)testedApplicationRunning;
 
