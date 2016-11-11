@@ -44,10 +44,10 @@
 
 + (id<FBResponsePayload>)handleSuperProcessElement:(FBRouteRequest *)request
 {
-  NSString *typeName = request.parameters[@"className"];
-  NSString *index = request.parameters[@"index"];
-  NSString *value = request.parameters[@"value"];
-  NSLog(@"Calling SuperProcess with type %@ at index %@", typeName, index);
+  NSString *typeName = request.arguments[@"className"];
+  NSString *index = request.arguments[@"index"];
+  NSString *value = request.arguments[@"value"];
+  NSLog(@"Calling SuperProcess with type %@ at index %@ with value %@", typeName, index, value);
   XCUIElementType type = [FBElementTypeTransformer elementTypeWithTypeName:typeName];
   NSError *error = [self.class processElementWithType:type atIndex:[index integerValue] under:request.session.application usingValue:value];
   if (error) {
@@ -82,7 +82,7 @@
     if (!element_chosen.hasKeyboardFocus && ![element_chosen fb_tapWithError:&error]) {
       return error;
     }
-    if (!value) {
+    if (value == (id)[NSNull null] || value.length == 0) {
       value = [NSString stringWithFormat:@"This is a sentencce for newmonkey testing.\n"];
     } else {
       if (![value hasSuffix:@"\n"]) {
