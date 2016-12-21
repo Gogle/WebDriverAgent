@@ -117,7 +117,8 @@
   return
   @{
     @"sessionId" : [FBSession activeSession].identifier ?: NSNull.null,
-    @"capabilities" : FBSessionCommands.currentCapabilities
+    @"capabilities" : FBSessionCommands.currentCapabilities,
+    @"testedAppProcessId": [NSNumber numberWithUnsignedInteger:[FBSession activeSession].testedAppProcessID],
   };
 }
 

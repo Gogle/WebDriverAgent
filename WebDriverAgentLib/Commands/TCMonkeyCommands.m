@@ -29,6 +29,7 @@
     [[FBRoute POST:@"/getTestedAppTree"] respondWithTarget:self action:@selector(handleGetTestedAppTree:)],
     [[FBRoute POST:@"/superProcess"] respondWithTarget:self action:@selector(handleSuperProcessElement:)],
     [[FBRoute POST:@"/connectToApp"] respondWithTarget:self action:@selector(handleConnectToAppAtPort:)],
+    [[FBRoute GET:@"/getActiveAppPID"].withoutSession respondWithTarget:self action:@selector(getActiveAppPID:)],
     ];
 }
 
@@ -36,7 +37,11 @@
 {
   FBApplication *application = request.session.application;
   if (!application || !application.running) {
-    [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
+      NSUInteger alertCount = [application.alerts count];
+      NSLog(@"Alerts count: %lu", (unsigned long)alertCount);
+      if (alertCount == 0) {
+          [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
+      }
   }
   const BOOL accessibleTreeType = [request.arguments[@"accessible"] boolValue];
   return FBResponseWithStatus(FBCommandStatusNoError, @{ @"tree": (accessibleTreeType ? application.fb_accessibilityTree : application.fb_tree) });
@@ -68,11 +73,16 @@
   return FBResponseWithOK();
 }
 
++ (id<FBResponsePayload>)getActiveAppPID:(FBRouteRequest *)request
+{
+  return FBResponseWithStatus(FBCommandStatusNoError, @([FBApplication fb_activeApplication].processID));
+}
+
 + (NSError *)processElementWithType:(XCUIElementType)type atIndex:(NSUInteger)index under:(XCUIElement *)element usingValue:(NSString *)value
 {
   NSError *error = nil;
   NSArray<XCUIElement *> *elements = [[element descendantsMatchingType:type] allElementsBoundByIndex];
-  //    NSLog(@"%@", elements);
+    NSLog(@"Count of type %@: %lu", [FBElementTypeTransformer stringWithElementType:type], (unsigned long)[elements count]);
   if (index >= [elements count]) {
     NSLog(@"Index of the element to process is beyond count.");
     return nil;

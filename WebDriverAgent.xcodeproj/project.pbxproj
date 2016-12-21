@@ -11,11 +11,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44757A851D42CF9700ECF35E /* XCUIDeviceRotationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44757A831D42CE8300ECF35E /* XCUIDeviceRotationTests.m */; };
 		9301DFDC1D241AF000AF5E38 /* AgentForHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 9301DFDA1D241AF000AF5E38 /* AgentForHost.h */; };
 		9301DFDD1D241AF000AF5E38 /* AgentForHost.m in Sources */ = {isa = PBXBuildFile; fileRef = 9301DFDB1D241AF000AF5E38 /* AgentForHost.m */; };
 		935BD1A01D2375B500B5C1ED /* TCMonkeyCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 935BD19E1D2375B500B5C1ED /* TCMonkeyCommands.h */; };
 		935BD1A11D2375B500B5C1ED /* TCMonkeyCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 935BD19F1D2375B500B5C1ED /* TCMonkeyCommands.m */; };
-		44757A851D42CF9700ECF35E /* XCUIDeviceRotationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44757A831D42CE8300ECF35E /* XCUIDeviceRotationTests.m */; };
 		AD35D01A1CF1418E00870A75 /* RoutingHTTPServer.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD2B1CF1238500806E5D /* RoutingHTTPServer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD35D01C1CF141A600870A75 /* KissXML.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD271CF120B000806E5D /* KissXML.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD35D0631CF1C2C200870A75 /* KissXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD271CF120B000806E5D /* KissXML.framework */; };
@@ -318,11 +318,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		44757A831D42CE8300ECF35E /* XCUIDeviceRotationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCUIDeviceRotationTests.m; sourceTree = "<group>"; };
 		9301DFDA1D241AF000AF5E38 /* AgentForHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AgentForHost.h; path = WebDriverAgentLib/AgentForHost.h; sourceTree = SOURCE_ROOT; };
 		9301DFDB1D241AF000AF5E38 /* AgentForHost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AgentForHost.m; path = WebDriverAgentLib/AgentForHost.m; sourceTree = SOURCE_ROOT; };
 		935BD19E1D2375B500B5C1ED /* TCMonkeyCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCMonkeyCommands.h; sourceTree = "<group>"; };
 		935BD19F1D2375B500B5C1ED /* TCMonkeyCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCMonkeyCommands.m; sourceTree = "<group>"; };
-		44757A831D42CE8300ECF35E /* XCUIDeviceRotationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCUIDeviceRotationTests.m; sourceTree = "<group>"; };
 		AD35D0291CF1B39E00870A75 /* generate_modules.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = generate_modules.sh; sourceTree = "<group>"; };
 		AD35D0651CF1C2CE00870A75 /* Peertalk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Peertalk.framework; path = Carthage/Build/iOS/Peertalk.framework; sourceTree = "<group>"; };
 		AD35D0691CF1C30700870A75 /* Peertalk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Peertalk.framework; path = Carthage/Build/Mac/Peertalk.framework; sourceTree = "<group>"; };
@@ -1123,19 +1123,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE158B441CBD459C00A3E3F0 /* XCTestSuiteRun.h in Headers */,
-				EE158B2C1CBD459C00A3E3F0 /* XCTestCase-AsynchronousTesting.h in Headers */,
-				EE158B121CBD459C00A3E3F0 /* XCApplicationMonitor_OSX.h in Headers */,
-				EE158B281CBD459C00A3E3F0 /* XCTest-ReportingAdditions.h in Headers */,
 				9301DFDC1D241AF000AF5E38 /* AgentForHost.h in Headers */,
-				EE158B421CBD459C00A3E3F0 /* XCTestSuite-XCTestProbeExtensions.h in Headers */,
-				EE158B1F1CBD459C00A3E3F0 /* XCKeyMappingPath.h in Headers */,
-				EE158B521CBD459C00A3E3F0 /* XCUIElementAsynchronousHandlerWrapper.h in Headers */,
-				EE158B341CBD459C00A3E3F0 /* XCTestContext.h in Headers */,
-				EE158B0A1CBD459C00A3E3F0 /* UILongPressGestureRecognizer-RecordingAdditions.h in Headers */,
-				EE158B231CBD459C00A3E3F0 /* XCSourceCodeTreeNode.h in Headers */,
-				EE158B271CBD459C00A3E3F0 /* XCSynthesizedEventRecord.h in Headers */,
-				EE158B301CBD459C00A3E3F0 /* XCTestCase.h in Headers */,
 				EE6B64FD1D0F86EF00E85F5D /* XCTestPrivateSymbols.h in Headers */,
 				EEE376451D59F81400ED88DD /* XCUIElement+FBUtilities.h in Headers */,
 				AD76723D1D6B7CC000610457 /* XCUIElement+FBTyping.h in Headers */,

@@ -35,6 +35,8 @@ extern NSString *const FBApplicationCrashedException;
 /*! Agent for communicating with tested app related to that session */
 @property (nonatomic, strong, readonly) AgentForHost *appAgent;
 
+@property (nonatomic, readonly) pid_t testedAppProcessID;
+
 + (nullable instancetype)activeSession;
 
 /**

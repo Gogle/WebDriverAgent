@@ -25,6 +25,7 @@ NSString *const FBApplicationCrashedException = @"FBApplicationCrashedException"
 
 @interface FBSession ()
 @property (nonatomic, strong, readwrite) FBApplication *testedApplication;
+@property (nonatomic, readwrite) pid_t testedAppProcessID;
 @end
 
 @implementation FBSession
@@ -57,6 +58,7 @@ static FBSession *_activeSession;
   session.identifier = [[NSUUID UUID] UUIDString];
   session.testedApplication = application;
   session.elementCache = [FBElementCache new];
+  session.testedAppProcessID = application.processID;
   session.appAgent = [AgentForHost new];
   [FBSession markSessionActive:session];
   return session;

@@ -48,8 +48,9 @@
      raise];
   }
   const BOOL isPossibleCrashAtStartUp = ([description rangeOfString:@"Application is not running"].location != NSNotFound);
+  const BOOL errorGetMainWindow = ([description rangeOfString:@"Error getting main window"].location != NSNotFound);
   const BOOL isPossibleCrashDuringTest = ([description rangeOfString:@"Failed to copy attributes after 30 retries"].location != NSNotFound);
-  if (isPossibleCrashAtStartUp || isPossibleCrashDuringTest) {
+  if (isPossibleCrashAtStartUp || isPossibleCrashDuringTest || errorGetMainWindow) {
     NSLog(@"gogleyin detect app crash");
     [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
   }
