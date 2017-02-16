@@ -15,6 +15,7 @@
 #import "FBApplication.h"
 #import "XCUIDevice.h"
 #import "XCUIDevice+FBHealthCheck.h"
+#import "XCUIDevice+FBHelpers.h"
 
 @implementation FBSessionCommands
 
@@ -30,6 +31,9 @@
     [[FBRoute GET:@"/status"].withoutSession respondWithTarget:self action:@selector(handleGetStatus:)],
 
     // Health check might modify simulator state so it should only be called in-between testing sessions
+    [[FBRoute GET:@"/wda/healthcheck"].withoutSession respondWithTarget:self action:@selector(handleGetHealthCheck:)],
+
+    // TODO: Those endpoints are deprecated and will die soon
     [[FBRoute GET:@"/healthcheck"].withoutSession respondWithTarget:self action:@selector(handleGetHealthCheck:)],
   ];
 }
@@ -84,6 +88,7 @@
       @"ios" :
         @{
           @"simulatorVersion" : [[UIDevice currentDevice] systemVersion],
+          @"ip" : [XCUIDevice sharedDevice].fb_wifiIPAddress ?: [NSNull null],
         },
       @"build" :
         @{
