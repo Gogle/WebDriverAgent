@@ -25,6 +25,7 @@
 {
   return
   @[
+    [[FBRoute POST:@"/url"] respondWithTarget:self action:@selector(handleOpenURL:)],
     [[FBRoute POST:@"/session"].withoutSession respondWithTarget:self action:@selector(handleCreateSession:)],
     [[FBRoute GET:@""] respondWithTarget:self action:@selector(handleGetActiveSession:)],
     [[FBRoute DELETE:@""] respondWithTarget:self action:@selector(handleDeleteSession:)],
@@ -32,14 +33,30 @@
 
     // Health check might modify simulator state so it should only be called in-between testing sessions
     [[FBRoute GET:@"/wda/healthcheck"].withoutSession respondWithTarget:self action:@selector(handleGetHealthCheck:)],
-
-    // TODO: Those endpoints are deprecated and will die soon
-    [[FBRoute GET:@"/healthcheck"].withoutSession respondWithTarget:self action:@selector(handleGetHealthCheck:)],
   ];
 }
 
 
 #pragma mark - Commands
+
++ (id<FBResponsePayload>)handleOpenURL:(FBRouteRequest *)request
+{
+  NSString *urlString = request.arguments[@"url"];
+  if (!urlString) {
+    return FBResponseWithStatus(FBCommandStatusInvalidArgument, @"URL is required");
+  }
+  NSURL *url = [NSURL URLWithString:urlString];
+  if (!url) {
+    return FBResponseWithStatus(
+      FBCommandStatusInvalidArgument,
+      [NSString stringWithFormat:@"%@ is not a valid URL", url]
+    );
+  }
+  if (![[UIApplication sharedApplication] openURL:url]) {
+    return FBResponseWithErrorFormat(@"Failed to open %@", url);
+  }
+  return FBResponseWithOK();
+}
 
 + (id<FBResponsePayload>)handleCreateSession:(FBRouteRequest *)request
 {
