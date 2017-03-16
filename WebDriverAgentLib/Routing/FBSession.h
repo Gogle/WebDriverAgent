@@ -37,6 +37,8 @@ extern NSString *const FBApplicationCrashedException;
 
 @property (nonatomic, readonly) pid_t testedAppProcessID;
 
+@property (nonatomic, assign) BOOL isLaunchedByUser;
+
 + (nullable instancetype)activeSession;
 
 /**
@@ -54,7 +56,7 @@ extern NSString *const FBApplicationCrashedException;
  @param application The application that we want to create session for
  @return new session
  */
-+ (instancetype)sessionWithApplication:(nullable FBApplication *)application;
++ (instancetype)sessionWithApplication:(nullable FBApplication *)application launchedByUser:(BOOL)launched;
 
 - (BOOL)testedApplicationRunning;
 

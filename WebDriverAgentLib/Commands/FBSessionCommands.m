@@ -44,6 +44,11 @@
 + (id<FBResponsePayload>)handleCreateSession:(FBRouteRequest *)request
 {
   NSDictionary *requirements = request.arguments[@"desiredCapabilities"];
+  if (!requirements) {
+    FBApplication *app = [FBApplication fb_activeApplication];
+    [FBSession sessionWithApplication:app launchedByUser:YES];
+    return FBResponseWithObject(FBSessionCommands.sessionInformation);
+  }
   NSString *bundleID = requirements[@"bundleId"];
   NSString *appPath = requirements[@"app"];
   if (!bundleID) {
@@ -58,7 +63,7 @@
   if (app.processID == 0) {
     return FBResponseWithErrorFormat(@"Failed to launch %@ application", bundleID);
   }
-  [FBSession sessionWithApplication:app];
+  [FBSession sessionWithApplication:app launchedByUser:NO];
   return FBResponseWithObject(FBSessionCommands.sessionInformation);
 }
 

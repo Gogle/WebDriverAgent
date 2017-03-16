@@ -33,7 +33,7 @@ NSString *const FBApplicationCrashedException = @"FBApplicationCrashedException"
 static FBSession *_activeSession;
 + (instancetype)activeSession
 {
-  return _activeSession ?: [FBSession sessionWithApplication:nil];
+  return _activeSession ?: [FBSession sessionWithApplication:nil launchedByUser:NO];
 }
 
 + (void)markSessionActive:(FBSession *)session
@@ -52,7 +52,7 @@ static FBSession *_activeSession;
   return _activeSession;
 }
 
-+ (instancetype)sessionWithApplication:(FBApplication *)application
++ (instancetype)sessionWithApplication:(FBApplication *)application launchedByUser:(BOOL)launched
 {
   FBSession *session = [FBSession new];
   session.identifier = [[NSUUID UUID] UUIDString];
@@ -60,23 +60,26 @@ static FBSession *_activeSession;
   session.elementCache = [FBElementCache new];
   session.testedAppProcessID = application.processID;
   session.appAgent = [AgentForHost new];
+  session.isLaunchedByUser = launched;
   [FBSession markSessionActive:session];
   return session;
 }
 
 - (void)kill
 {
-  [self.testedApplication terminate];
+  if (!self.isLaunchedByUser) {
+    [self.testedApplication terminate];
+  }
   _activeSession = nil;
 }
 
 - (FBApplication *)application
 {
   FBApplication *application = [FBApplication fb_activeApplication];
-  const BOOL testedApplicationIsActiveAndNotRunning = (application.processID == self.testedApplication.processID && !application.running);
-  if (testedApplicationIsActiveAndNotRunning) {
-    [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
-  }
+//  const BOOL testedApplicationIsActiveAndNotRunning = (application.processID == self.testedApplication.processID && !application.running);
+//  if (testedApplicationIsActiveAndNotRunning) {
+//    [[NSException exceptionWithName:FBApplicationCrashedException reason:@"Application is not running, possibly crashed" userInfo:nil] raise];
+//  }
   [application query];
   [application resolve];
   return application;
