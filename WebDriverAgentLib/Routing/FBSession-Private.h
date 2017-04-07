@@ -10,14 +10,14 @@
 #import <WebDriverAgentLib/FBSession.h>
 
 @class FBElementCache;
-@class AgentForHost;
+//@class AgentForHost;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FBSession ()
 @property (nonatomic, copy, readwrite) NSString *identifier;
 @property (nonatomic, strong, readwrite) FBElementCache *elementCache;
-@property (nonatomic, strong, readwrite) AgentForHost *appAgent;
+//@property (nonatomic, strong, readwrite) AgentForHost *appAgent;
 
 /**
  Sets session as current session

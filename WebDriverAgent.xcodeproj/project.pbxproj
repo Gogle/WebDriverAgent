@@ -1,8 +1,4 @@
 // !$*UTF8*$!
-
-
-
-
 {
 	archiveVersion = 1;
 	classes = {
@@ -12,10 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		44757A851D42CF9700ECF35E /* XCUIDeviceRotationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44757A831D42CE8300ECF35E /* XCUIDeviceRotationTests.m */; };
-		9301DFDC1D241AF000AF5E38 /* AgentForHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 9301DFDA1D241AF000AF5E38 /* AgentForHost.h */; };
-		9301DFDD1D241AF000AF5E38 /* AgentForHost.m in Sources */ = {isa = PBXBuildFile; fileRef = 9301DFDB1D241AF000AF5E38 /* AgentForHost.m */; };
-		935BD1A01D2375B500B5C1ED /* TCMonkeyCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 935BD19E1D2375B500B5C1ED /* TCMonkeyCommands.h */; };
-		935BD1A11D2375B500B5C1ED /* TCMonkeyCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 935BD19F1D2375B500B5C1ED /* TCMonkeyCommands.m */; };
 		711084441DA3AA7500F913D6 /* FBXPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 711084421DA3AA7500F913D6 /* FBXPath.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		711084451DA3AA7500F913D6 /* FBXPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 711084431DA3AA7500F913D6 /* FBXPath.m */; };
 		712A0C851DA3E459007D02E5 /* FBXPathTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 712A0C841DA3E459007D02E5 /* FBXPathTests.m */; };
@@ -355,11 +347,6 @@
 
 /* Begin PBXFileReference section */
 		44757A831D42CE8300ECF35E /* XCUIDeviceRotationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCUIDeviceRotationTests.m; sourceTree = "<group>"; };
-		9301DFDA1D241AF000AF5E38 /* AgentForHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AgentForHost.h; path = WebDriverAgentLib/AgentForHost.h; sourceTree = SOURCE_ROOT; };
-		9301DFDB1D241AF000AF5E38 /* AgentForHost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AgentForHost.m; path = WebDriverAgentLib/AgentForHost.m; sourceTree = SOURCE_ROOT; };
-		935BD19E1D2375B500B5C1ED /* TCMonkeyCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCMonkeyCommands.h; sourceTree = "<group>"; };
-		935BD19F1D2375B500B5C1ED /* TCMonkeyCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCMonkeyCommands.m; sourceTree = "<group>"; };
-		AD35D0291CF1B39E00870A75 /* generate_modules.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = generate_modules.sh; sourceTree = "<group>"; };
 		711084421DA3AA7500F913D6 /* FBXPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBXPath.h; sourceTree = "<group>"; };
 		711084431DA3AA7500F913D6 /* FBXPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBXPath.m; sourceTree = "<group>"; };
 		712A0C841DA3E459007D02E5 /* FBXPathTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBXPathTests.m; sourceTree = "<group>"; };
@@ -1588,7 +1575,6 @@
 				EEBBD48C1D47746D00656A81 /* XCUIElement+FBFind.m in Sources */,
 				EE158ADD1CBD456F00A3E3F0 /* FBResponsePayload.m in Sources */,
 				EE158ADF1CBD456F00A3E3F0 /* FBRoute.m in Sources */,
-				9301DFDD1D241AF000AF5E38 /* AgentForHost.m in Sources */,
 				EEE9B4731CD02B88009D2030 /* FBRunLoopSpinner.m in Sources */,
 				71A7EAFA1E224648001DA4F2 /* FBClassChainQueryParser.m in Sources */,
 				71A224E61DE2F56600844D55 /* NSPredicate+FBFormat.m in Sources */,

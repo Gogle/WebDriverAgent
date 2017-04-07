@@ -44,7 +44,16 @@
   CGSize screenSize = FBAdjustDimensionsForApplication(app.frame.size, (UIInterfaceOrientation)[XCUIDevice sharedDevice].orientation);
   CGRect screenFrame = CGRectMake(0, 0, screenSize.width, screenSize.height);
   BOOL rectIntersects = CGRectIntersectsRect(self.visibleFrame, screenFrame);
-  BOOL isActionable = CGRectContainsPoint(app.frame, self.hitPoint);
+  BOOL isActionable;
+  @try {
+      isActionable = CGRectContainsPoint(app.frame, self.hitPoint);
+  } @catch (NSException *exception) {
+      NSLog(@"%@", exception);
+      CGPoint hitPoint = CGPointMake(self.frame.origin.x + self.frame.size.width / 2,
+                                     self.frame.origin.y + self.frame.size.height / 2);
+      isActionable = CGRectContainsPoint(app.frame, hitPoint);
+  }
+//  BOOL isActionable = CGRectContainsPoint(app.frame, self.hitPoint);
   return rectIntersects && isActionable;
 }
 

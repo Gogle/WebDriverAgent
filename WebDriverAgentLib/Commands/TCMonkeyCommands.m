@@ -13,7 +13,7 @@
 #import "FBSession.h"
 #import "FBApplication.h"
 #import "XCUIElement+FBTap.h"
-#import "AgentForHost.h"
+//#import "AgentForHost.h"
 #import "FBKeyboard.h"
 #import "FBResponsePayload.h"
 #import "XCUIApplication+FBHelpers.h"
@@ -28,7 +28,7 @@
   @[
     [[FBRoute POST:@"/getTestedAppTree"] respondWithTarget:self action:@selector(handleGetTestedAppTree:)],
     [[FBRoute POST:@"/superProcess"] respondWithTarget:self action:@selector(handleSuperProcessElement:)],
-    [[FBRoute POST:@"/connectToApp"] respondWithTarget:self action:@selector(handleConnectToAppAtPort:)],
+//    [[FBRoute POST:@"/connectToApp"] respondWithTarget:self action:@selector(handleConnectToAppAtPort:)],
     [[FBRoute GET:@"/getActiveAppPID"].withoutSession respondWithTarget:self action:@selector(getActiveAppPID:)],
     ];
 }
@@ -65,13 +65,13 @@
   return FBResponseWithOK();
 }
 
-+ (id<FBResponsePayload>)handleConnectToAppAtPort:(FBRouteRequest *)request
-{
-  NSString *port = request.parameters[@"port"];
-  NSLog(@"Calling ConnectToApp at port %@", port);
-  [request.session.appAgent connectToLocalIPv4AtPort:(in_port_t)[port intValue]];
-  return FBResponseWithOK();
-}
+//+ (id<FBResponsePayload>)handleConnectToAppAtPort:(FBRouteRequest *)request
+//{
+//  NSString *port = request.parameters[@"port"];
+//  NSLog(@"Calling ConnectToApp at port %@", port);
+//  [request.session.appAgent connectToLocalIPv4AtPort:(in_port_t)[port intValue]];
+//  return FBResponseWithOK();
+//}
 
 + (id<FBResponsePayload>)getActiveAppPID:(FBRouteRequest *)request
 {

@@ -19,7 +19,7 @@
 #import "XCAccessibilityElement.h"
 #import "XCAXClient_iOS.h"
 #import "XCUIElement.h"
-#import "AgentForHost.h"
+//#import "AgentForHost.h"
 
 NSString *const FBApplicationCrashedException = @"FBApplicationCrashedException";
 
@@ -59,7 +59,7 @@ static FBSession *_activeSession;
   session.testedApplication = application;
   session.elementCache = [FBElementCache new];
   session.testedAppProcessID = application.processID;
-  session.appAgent = [AgentForHost new];
+//  session.appAgent = [AgentForHost new];
   session.isLaunchedByUser = launched;
   [FBSession markSessionActive:session];
   return session;
